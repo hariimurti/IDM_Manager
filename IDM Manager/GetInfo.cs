@@ -16,7 +16,7 @@ namespace IDM_Manager
             {
                 ExePath = registryKey.GetValue("ExePath").ToString();
                 idmData = registryKey.GetValue("AppDataIDMFolder").ToString();
-                DwnlData = registryKey.GetValue("TempPath").ToString() + "\\DwnlData";
+                DwnlData = Path.Combine(registryKey.GetValue("TempPath").ToString(), "DwnlData");
             }
             else
             {
@@ -35,8 +35,8 @@ namespace IDM_Manager
                 {
                     ExePath = null;
                 }
-                idmData = userProfile + "\\AppData\\Roaming\\IDM";
-                DwnlData = idmData + "\\DwnlData";
+                idmData = Path.Combine(userProfile, "AppData\\Roaming\\IDM");
+                DwnlData = Path.Combine(idmData, "DwnlData");
             }
 
             return new string[] { ExePath, idmData, DwnlData };
