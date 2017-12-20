@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
+using Harimurti;
 
 namespace IDM_Manager
 {
@@ -14,6 +15,12 @@ namespace IDM_Manager
             InitializeComponent();
             //update info groupbox
             updateInfo();
+            var isAdmin = AdminPrivilege.isElevated();
+            if (!isAdmin)
+            {
+                dialogAsk("Tolong jalankan dengan Run as Adminstrator!");
+                Environment.Exit(1);
+            }
         }
 
         private void updateInfo()

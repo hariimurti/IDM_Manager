@@ -5,35 +5,55 @@ namespace IDM_Manager
 {
     class Run
     {
-        public static void RegBackup(string _file)
+        private static void Registry(string arg)
         {
-            ProcessStartInfo reg = new ProcessStartInfo();
-            reg.FileName = "reg";
-            reg.Arguments = "export HKEY_CURRENT_USER\\Software\\DownloadManager " + _file + " /y";
-            reg.WindowStyle = ProcessWindowStyle.Hidden;
-            Process exec = Process.Start(reg);
-            exec.WaitForExit();
+            var p = new Process();
+            p.StartInfo.FileName = "reg";
+            p.StartInfo.Arguments = arg;
+            p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            p.StartInfo.Verb = "runas";
+            p.Start();
+            p.WaitForExit();
         }
 
-        public static void RegRestore(string _file)
+        public static bool RegBackup(string _file)
         {
-            ProcessStartInfo reg = new ProcessStartInfo();
-            reg.FileName = "reg";
-            reg.Arguments = "import " + _file;
-            reg.WindowStyle = ProcessWindowStyle.Hidden;
-            Process exec = Process.Start(reg);
-            exec.WaitForExit();
+            try
+            {
+                Registry("export HKEY_CURRENT_USER\\Software\\DownloadManager " + _file + " /y");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+        }
+
+        public static bool RegRestore(string _file)
+        {
+            try
+            {
+                Registry("import " + _file);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
         }
 
         public static void ShutdownIDM()
         {
             string system32 = Environment.GetFolderPath(Environment.SpecialFolder.SystemX86);
-            ProcessStartInfo exe = new ProcessStartInfo();
-            exe.FileName = system32 + "\\taskkill.exe";
-            exe.Arguments = "/f /im IDMan.exe";
-            exe.WindowStyle = ProcessWindowStyle.Hidden;
-            Process exec = Process.Start(exe);
-            exec.WaitForExit();
+            var p = new Process();
+            p.StartInfo.FileName = system32 + "\\taskkill.exe";
+            p.StartInfo.Arguments = "/f /im IDMan.exe";
+            p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            p.StartInfo.Verb = "runas";
+            p.Start();
+            p.WaitForExit();
         }
 
         public static void StartIDM(string ExePath)
