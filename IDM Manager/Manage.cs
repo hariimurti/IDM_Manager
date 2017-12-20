@@ -1,6 +1,5 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 
@@ -20,6 +19,7 @@ namespace IDM_Manager
         static string _Reg = "setting.reg";
         static string _bReg = _backup + "\\" + _Reg;
         static string _rReg = _restore + "\\" + _Reg;
+        static string _dReg = _restore + "\\delete.reg";
 
         public static void Backup(string _fileBackup, string idmData, string DwnlData)
         {
@@ -80,6 +80,8 @@ namespace IDM_Manager
             }
 
             //restoring registry
+            File.WriteAllLines(_dReg, new string[] { "Windows Registry Editor Version 5.00", null, @"[-HKEY_CURRENT_USER\SOFTWARE\DownloadManager]", null, null });
+            Run.RegRestore(_dReg);
             Run.RegRestore(_rReg);
             registryKey.SetValue("AppDataIDMFolder", idmData);
             registryKey.SetValue("TempPath", DwnlData.Replace("\\DwnlData", "")); //remove "DwnlData" at the end of path
